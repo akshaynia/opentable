@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { addCity } from "../redux/actions";
+import PageList from "./pagelist";
 import axios from "axios";
 import Table from "./table";
 
@@ -21,17 +22,15 @@ class AddCity extends React.Component {
   };
 
   handleAddCity = () => {
-      
-      this.setState({
-        loadRestaurant:true,
-    })
-
+    this.setState({
+     loadRestaurant:true,
+    },this.fetchRestaurants);
     this.props.addCity(this.state.input);
     
   };
 
   fetchRestaurants = ()=>{
-    axios("http://opentable.herokuapp.com/api/restaurants?city="+ this.state.input+ "&&per_page=" +this.state.per_page +"&&current_page=2")
+    axios("http://opentable.herokuapp.com/api/restaurants?city="+ this.state.input+"&per_page=" +this.state.per_page+"&page="+this.state.current_page)
     .then(res => {
         const restaurants = res.data.restaurants;
         console.log(restaurants);
@@ -42,13 +41,14 @@ class AddCity extends React.Component {
         })
         
     })
-  }          
-
-  componentDidMount(){
-      if(this.state.loadRestaurant){
-      this.fetchRestaurants();
   }
-};
+  
+  onPageClick = (e, pageNumber) =>{
+    console.log(pageNumber)
+    this.setState({
+      current_page: pageNumber,
+    },this.fetchRestaurants);
+  }
 
   render() {
     return (
@@ -63,7 +63,7 @@ class AddCity extends React.Component {
         { this.state.restaurants?(
         <div>
         <Table restaurants={ this.state.restaurants}/>
-        {/* <PageList count={this.state.count}/> */}
+        <PageList count={this.state.count} onPageClick={this.onPageClick}/>
         </div>
         ):null}
         

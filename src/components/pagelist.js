@@ -1,20 +1,22 @@
 import React from "react";
 import './table.css'
 
-const Table = (props) => {
-    const { count }= props;
+const PageList = (props) => {
+  const { count }= props;
 
-    return(
-//        <ul>
-//            {
-//                 for(var i = 0;i<count;i++){
-//                    return(<li>{i+1}</li>) 
-                
-//                    }
-//            }
-//        </ul>    
+  const pageNumber = [];
+  for(var i=1;i<((count/10)+1);i++){
+    pageNumber.push(i);
+  }
+
+  return(
+    <ul>
+      {pageNumber.map(item=>{
+        return(<li onClick={(e)=>props.onPageClick(e, item)}>{item}</li>)
+      })}
+    </ul>
   )
    
 }
 
-export default Table;
+export default PageList;
